@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System;
+using System.Threading;
 using Library;
 using Xunit;
 using Xunit.Abstractions;
@@ -25,4 +26,7 @@ public class CalculatorTests
         Assert.Equal(-1, Calculator.Subtract(1, 2));
 #endif
     }
+
+    [Fact]
+    public void HungTest() => Thread.Sleep(20000);
 }
