@@ -8,6 +8,14 @@ steps:
   displayName: dotnet pack
   workingDirectory: src
 
+- powershell: |
+    $DumpDir = Join-Path "$(Build.ArtifactStagingDirectory)" dumps
+    if (!(Test-Path $DumpDir)) { New-Item -ItemType Directory -Path $DumpDir | Out-Null }
+    $procDumpArgs = '-accepteula','-w','testhost.x86.exe',"$DumpDir",'-cl','20','-u','-ma'
+    $procdump = Start-Process -FilePath (.\azure-pipelines\get-procdump.ps1) -NoNewWindow -PassThru -ArgumentList $procDumpArgs
+  displayName: Setting up to capture dumps of hung tests
+  condition: and(succeeded(), eq(variables['Agent.OS'], 'Windows_NT'))
+
 - task: DotNetCoreCLI@2
   displayName: dotnet test -f net472
   inputs:
